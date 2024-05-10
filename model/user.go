@@ -1,0 +1,21 @@
+package model
+
+import (
+	"github.com/canergulay/go-betternews-signaling/enum"
+	"github.com/gorilla/websocket"
+)
+
+type User struct {
+	ID ID
+	Conn *websocket.Conn
+	Sdp string
+	Status enum.UserStatus
+}
+
+func (u *User) SetSdp(sdp string){
+	u.Sdp = sdp
+}
+
+func (u *User) SetStatus(status enum.UserStatus){
+	u.Status = status
+}

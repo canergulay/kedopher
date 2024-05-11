@@ -26,6 +26,10 @@ func (u *UserHub) AddNewUser(user *model.User) {
 	u.Users[model.ID(user.ID)] = user
 }
 
+func (u *UserHub) DeleteUserByID(userID model.ID){
+	delete(u.Users,userID)
+}
+
 func (u *UserHub) GetUserById(id model.ID) (*model.User) {
 	u.mutex.Lock()
 	defer u.mutex.Unlock()

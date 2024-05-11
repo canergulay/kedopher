@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/canergulay/go-betternews-signaling/userhub"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	"go.uber.org/zap"
+	"github.com/sirupsen/logrus"
 )
 
 type WsServer interface {
@@ -40,7 +41,7 @@ var upgrader = websocket.Upgrader{
 func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Printf("Websocket upgrade error: %v", err)
+		logrus.Errorf("unable to upgrade connection to websocket, error: %s",err)
 		return
 	}
 	defer conn.Close()
@@ -51,23 +52,28 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 		Status: enum.UserIdle,
 	}
 
+	logrus.Infof("connection set for user %d",user.ID)
 	
 	ws.userHub.AddNewUser(user)
 
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
-			zap.L().Error("unable to read message",zap.Any("message",string(msg)),zap.Error(err))
-			continue
+			logrus.Infof("unable to receive msg for user %d, error: %v",user.ID,err)
+			ws.userHub.DeleteUserByID(user.ID)
+			break
 		}
+
+		logrus.WithField("message",msg).Infof("message received for user %s",user.ID)
 
 		var message dto.Message
 		err = json.Unmarshal(msg,&message)
 		if err != nil {
-			zap.L().Warn("unable to parse message",zap.Any("message",string(msg)),zap.Error(err))
+
+			logrus.WithField("message",msg).Warnf("unable to parse message for user %s",user.ID)
 			continue
 		}
-
+		fmt.Println("able to marshall",message)
 		switch message.Type {
 		case enum.INIT_SIGNALING:
 			ws.initSignalingForUser(user)
@@ -83,6 +89,10 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 
 
 func (ws wsServer) sendMessage(conn *websocket.Conn, msg interface{}) {
+	if conn == nil {
+		return
+	}
+
 	message, err := json.Marshal(msg)
 	if err != nil {
 		log.Printf("Failed to marshal message: %v", err)

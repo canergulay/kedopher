@@ -16,7 +16,7 @@ func main() {
 	connectionHub := connectionhub.NewConnectionHub()
 
 	wsServer := server.NewWsServer(&userHub,&connectionHub)
-
+	
 	http.HandleFunc("/ws", wsServer.HandleWebsocketConnections)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))

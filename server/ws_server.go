@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -26,10 +25,14 @@ type wsServer struct {
 }
 
 func NewWsServer(userHub *userhub.UserHub, connectionhub *connectionhub.ConnectionHub) wsServer {
-	return wsServer{
+	ws := wsServer{
 		userHub: userHub,
 		connectionHub: connectionhub,
 	}
+
+	go ws.waitingUsersProcessor()
+
+	return ws 
 }
 
 
@@ -52,19 +55,19 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 		Status: enum.UserIdle,
 	}
 
-	logrus.Infof("connection set for user %d",user.ID)
+	logrus.Infof("connection set for user %s",user.ID)
 	
 	ws.userHub.AddNewUser(user)
 
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
-			logrus.Infof("unable to receive msg for user %d, error: %v",user.ID,err)
+			logrus.Infof("unable to receive msg for user %s, error: %v",user.ID,err)
 			ws.userHub.DeleteUserByID(user.ID)
 			break
 		}
 
-		logrus.WithField("message",msg).Infof("message received for user %s",user.ID)
+		logrus.WithField("message",string(msg)).Infof("message received for user %s",user.ID)
 
 		var message dto.Message
 		err = json.Unmarshal(msg,&message)
@@ -73,10 +76,10 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 			logrus.WithField("message",msg).Warnf("unable to parse message for user %s",user.ID)
 			continue
 		}
-		fmt.Println("able to marshall",message)
+
 		switch message.Type {
-		case enum.INIT_SIGNALING:
-			ws.initSignalingForUser(user)
+		case enum.INIT_CALL:
+			ws.handleInitCall(user)
 		case enum.OFFER:
 			ws.handleOffer(message,user)
 		case enum.ANSWER:

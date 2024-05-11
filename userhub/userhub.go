@@ -9,13 +9,14 @@ import (
 
 type UserHub struct {
 	Users map[model.ID]*model.User 
-
+	WaitingUsersQueue chan model.ID
 	mutex sync.Mutex
 }
 
 func NewUserHub () UserHub{
 	return UserHub{
 		Users: make(map[model.ID]*model.User),
+		WaitingUsersQueue: make(chan model.ID, 1000),
 		mutex: sync.Mutex{},
 	}
 }

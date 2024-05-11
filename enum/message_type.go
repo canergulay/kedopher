@@ -3,9 +3,11 @@ package enum
 type MessageType string
 
 const (
-    INIT_SIGNALING MessageType = "INIT_SIGNALING"
+    INIT_CALL MessageType = "INIT_CALL"
 
     TRIGGER_ICE_CANDIDATES MessageType = "TRIGGER_ICE_CANDIDATES"
+
+    OFFER_START MessageType = "OFFER_START"
 
     OFFER MessageType = "OFFER"
 

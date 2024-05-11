@@ -1,35 +1,29 @@
 package server
 
 import (
-	"time"
-
 	"github.com/canergulay/go-betternews-signaling/enum"
 	"github.com/canergulay/go-betternews-signaling/model"
 	"github.com/canergulay/go-betternews-signaling/model/dto"
+	"github.com/sirupsen/logrus"
 )
 
-func (ws wsServer) initSignalingForUser(user *model.User) {
-	defer user.SetStatus(enum.UserWaiting)
-	ok,peer := ws.userHub.GetRandomAvailableUser(user.ID)
-	if !ok {
-		time.Sleep(time.Second*3)
-	}
-
-	connection := model.NewConnection([]model.ID{user.ID,peer.ID})
+func (ws wsServer) initSignalingForUsers(users []model.ID) {
+	connection := model.NewConnection(users)
 
 	ws.connectionHub.AddNewConnection(&connection)
 
-	ws.sendMessage(peer.Conn,dto.Message{
-		Type: enum.OFFER,
-		Body:dto.Offer{
-			ConnectionID: string(connection.ID),
-		},
-	},)
+	for _, userID := range users {
+		user := ws.userHub.GetUserById(userID)
+		if user == nil {
+			logrus.Warn("unable to find user for signal initializing")
+			continue
+		}
 
-	ws.sendMessage(user.Conn,dto.Message{
-		Type: enum.OFFER,
-		Body: dto.Offer{
-			ConnectionID: string(connection.ID),
-		},
-	},)
+		ws.sendMessage(user.Conn,dto.Message{
+			Type: enum.OFFER_START,
+			Body:dto.Offer{
+				ConnectionID: string(connection.ID),
+			},
+		},)
+	}
 }

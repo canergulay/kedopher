@@ -11,7 +11,6 @@ import (
 
 
 func main() {
-
 	userHub := userhub.NewUserHub()
 	connectionHub := connectionhub.NewConnectionHub()
 

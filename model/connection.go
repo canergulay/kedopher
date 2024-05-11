@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"slices"
+	"time"
 
 	"github.com/canergulay/go-betternews-signaling/enum"
 	"github.com/google/uuid"
@@ -14,6 +15,7 @@ type Connection struct {
 	AcceptedUsers []ID
 	CandidateSentUsers []ID
 	Status enum.ConnectionStatus
+	CreatedAt time.Time
 }
 
 func NewConnection(users[]ID) Connection{
@@ -23,6 +25,7 @@ func NewConnection(users[]ID) Connection{
 		AcceptedUsers: make([]ID, 0, len(users)),
 		CandidateSentUsers: make([]ID, 0, len(users)),
 		Status: enum.ConnectionInitial,
+		CreatedAt: time.Now(),
 	}
 }
 

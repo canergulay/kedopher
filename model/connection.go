@@ -12,6 +12,7 @@ type Connection struct {
 	ID ID
 	Users []ID
 	AcceptedUsers []ID
+	CandidateSentUsers []ID
 	Status enum.ConnectionStatus
 }
 
@@ -19,6 +20,8 @@ func NewConnection(users[]ID) Connection{
 	return Connection{
 		ID: ID(uuid.New().String()),
 		Users: users,
+		AcceptedUsers: make([]ID, 0, len(users)),
+		CandidateSentUsers: make([]ID, 0, len(users)),
 		Status: enum.ConnectionInitial,
 	}
 }
@@ -41,6 +44,21 @@ func (c *Connection) AddUserToAcceptedUsers(userID ID) error {
 	return nil
 }
 
+func (c *Connection) AddUserToCandidateSentUsers(userID ID) error {
+	if !slices.Contains(c.Users,userID){
+		return fmt.Errorf("user does not exist within the connection, userID: %s",userID)
+	}
+
+	c.CandidateSentUsers = append(c.CandidateSentUsers, userID)
+
+	return nil
+}
+
+
 func (c Connection) IsAllUsersAccepted() bool {
 	return len(c.Users) == len(c.AcceptedUsers)
+}
+
+func (c Connection) IsAllUsersSentIceCandidates() bool {
+	return len(c.Users) == len(c.CandidateSentUsers)
 }

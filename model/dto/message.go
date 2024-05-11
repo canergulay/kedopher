@@ -19,3 +19,8 @@ func (m Message) GetBodyAsOffer() (Offer,bool){
 	parsed,ok := m.Body.(Offer)
 	return parsed,ok
 }
+
+func (m Message) GetBodyAsIceCandidate() (IceCandidate, bool) {
+	parsed,ok := m.Body.(IceCandidate)
+	return parsed,ok
+}

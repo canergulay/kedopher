@@ -9,5 +9,7 @@ const (
 
     UserNotifiedForIce
 
+    UserSentIceCandidate
+
     UserMatched
 )

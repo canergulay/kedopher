@@ -1,5 +1,7 @@
 package dto
 
-type TriggerIceCandidatesDTO struct {
-	ConnectionID string `json:"connectionId"`
+import "github.com/canergulay/go-betternews-signaling/model"
+
+type TriggerIceCandidates struct {
+	ConnectionID model.ID `json:"connectionID"`
 }

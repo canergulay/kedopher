@@ -5,7 +5,7 @@ type MessageType string
 const (
     INIT_CALL MessageType = "INIT_CALL"
 
-    TRIGGER_ICE_CANDIDATES MessageType = "TRIGGER_ICE_CANDIDATES"
+    TRIGGER_ICE_CANDIDATE MessageType = "TRIGGER_ICE_CANDIDATE"
 
     OFFER_START MessageType = "OFFER_START"
 

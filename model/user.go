@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/canergulay/go-betternews-signaling/enum"
+	"github.com/canergulay/go-betternews-signaling/model/enum"
 	"github.com/gorilla/websocket"
 )
 

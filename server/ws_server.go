@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/canergulay/go-betternews-signaling/connectionhub"
-	"github.com/canergulay/go-betternews-signaling/enum"
 	"github.com/canergulay/go-betternews-signaling/model"
 	"github.com/canergulay/go-betternews-signaling/model/dto"
+	"github.com/canergulay/go-betternews-signaling/model/enum"
 	"github.com/canergulay/go-betternews-signaling/userhub"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -70,9 +70,8 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 		logrus.WithField("message",string(msg)).Infof("message received for user %s",user.ID)
 
 		var message dto.Message
-		err = json.Unmarshal(msg,&message)
+		err = message.UnmarshalJSON(msg)
 		if err != nil {
-
 			logrus.WithField("message",msg).Warnf("unable to parse message for user %s",user.ID)
 			continue
 		}
@@ -84,6 +83,8 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 			ws.handleOffer(message,user)
 		case enum.ANSWER:
 			ws.handleAnswer(message,user)
+		case enum.TRIGGER_ICE_CANDIDATE:
+			ws.handleTriggerIceCandidates(message,user)
 		case enum.ICE_CANDIDATES:
 			ws.handleIceCandidate(message,user)
 		}

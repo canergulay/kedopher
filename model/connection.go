@@ -5,7 +5,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/canergulay/go-betternews-signaling/enum"
+	"github.com/canergulay/go-betternews-signaling/model/enum"
 	"github.com/google/uuid"
 )
 

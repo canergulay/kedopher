@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/canergulay/go-betternews-signaling/enum"
 	"github.com/canergulay/go-betternews-signaling/model"
+	"github.com/canergulay/go-betternews-signaling/model/enum"
 	"github.com/sirupsen/logrus"
 )
 

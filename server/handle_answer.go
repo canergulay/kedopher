@@ -1,9 +1,10 @@
 package server
 
 import (
-	"github.com/canergulay/go-betternews-signaling/enum"
 	"github.com/canergulay/go-betternews-signaling/model"
 	"github.com/canergulay/go-betternews-signaling/model/dto"
+	"github.com/canergulay/go-betternews-signaling/model/enum"
+	"github.com/sirupsen/logrus"
 )
 
 func (w wsServer) handleAnswer(msg dto.Message,user *model.User){
@@ -22,31 +23,31 @@ func (w wsServer) handleAnswer(msg dto.Message,user *model.User){
 		return
 	}
 
-	if err := connection.AddUserToAcceptedUsers(user.ID); err!=nil {
-		// todo log
-	}
+	for _,userID := range connection.Users {
+		if userID == user.ID {
+			continue
+		}
 
-	if connection.IsAllUsersAccepted(){
-		w.triggerIceCandidatesExchangeForConnectionUsers(connection)
-	}
-}
-
-func (w wsServer) triggerIceCandidatesExchangeForConnectionUsers(connection *model.Connection){
-	defer connection.SetStatus(enum.ConnectionWaitingForIceExchange)
-	
-	for _,userID := range connection.AcceptedUsers {
 		user := w.userHub.GetUserById(userID)
 		if user == nil {
-			// todo log
+		logrus.Warnf("unable to find user for handle answer back message %s",userID)
+		continue
 		}
 
 		w.sendMessage(user.Conn,dto.Message{
-			Type: enum.TRIGGER_ICE_CANDIDATES,
-			Body: dto.TriggerIceCandidatesDTO{
-				ConnectionID: string(connection.ID),
-			},
+			Type: enum.ANSWER,
+			Body: answer,
 		})
 
-		user.SetStatus(enum.UserNotifiedForIce)
 	}
+
+
+
+	// if err := connection.AddUserToAcceptedUsers(user.ID); err!=nil {
+	// 	// todo log
+	// }
+
+	// if connection.IsAllUsersAccepted(){
+	// 	w.triggerIceCandidatesExchangeForConnectionUsers(connection)
+	// }
 }

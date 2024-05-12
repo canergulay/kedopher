@@ -84,7 +84,7 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 			ws.handleOffer(message,user)
 		case enum.ANSWER:
 			ws.handleAnswer(message,user)
-		case enum.SEND_ICE_CANDIDATE:
+		case enum.ICE_CANDIDATES:
 			ws.handleIceCandidate(message,user)
 		}
 	}

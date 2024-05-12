@@ -3,9 +3,8 @@ package dto
 import "github.com/canergulay/go-betternews-signaling/model"
 
 
-type IceCandidate struct {
+type IceCandidates struct {
 	ConnectionID model.ID `json:"connectionId"`
-	UserID model.ID `json:"userId"`
 
 	Candidates []candidate `json:"candidates"` 
 }

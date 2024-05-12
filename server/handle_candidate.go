@@ -19,13 +19,13 @@ func (w wsServer) handleIceCandidate(message dto.Message,user *model.User){
 		return
 	}
 
-	connection.AddUserToAcceptedUsers(user.ID)
+	connection.AddUserToCandidateSentUsers(user.ID)
 	user.SetStatus(enum.UserSentIceCandidate)
 
 
 	// send iceCandidate to all users in the connection except the candidate owner
 	for _, userID := range connection.AcceptedUsers {
-		if userID == iceCandidate.UserID {
+		if userID == user.ID{
 			continue
 		}
 
@@ -36,7 +36,7 @@ func (w wsServer) handleIceCandidate(message dto.Message,user *model.User){
 		}
 
 		w.sendMessage(user.Conn,dto.Message{
-			Type: enum.RECEIVE_ICE_CANDIDATE,
+			Type: enum.ICE_CANDIDATES,
 			Body: iceCandidate,
 		})
 

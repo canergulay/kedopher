@@ -1,10 +1,10 @@
 package server
 
 import (
-	"fmt"
-
+	"github.com/canergulay/go-betternews-signaling/enum"
 	"github.com/canergulay/go-betternews-signaling/model"
 	"github.com/canergulay/go-betternews-signaling/model/dto"
+	"github.com/sirupsen/logrus"
 )
 
 func (w wsServer) handleOffer(message dto.Message,user *model.User){
@@ -14,7 +14,26 @@ func (w wsServer) handleOffer(message dto.Message,user *model.User){
 		return
 	}
 
-	// todo logic
+	connection := w.connectionHub.GetConnectionById(offer.ConnectionID)
+	if connection == nil {
+		logrus.Warnf("unable to find connection %s for user %s",offer.ConnectionID,user.ID)
+		return
+	}
 
-	fmt.Println(offer)
+	for _,userID := range connection.Users {
+		if userID == user.ID{
+			continue
+		}
+
+		peer := w.userHub.GetUserById(userID)
+		if peer == nil {
+			// todo log
+			continue
+		}
+
+		w.sendMessage(peer.Conn,dto.Message{
+			Type: enum.OFFER,
+			Body: offer,
+		})
+	}
 }

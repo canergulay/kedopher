@@ -22,7 +22,7 @@ func (ws wsServer) initSignalingForUsers(users []model.ID) {
 		ws.sendMessage(user.Conn,dto.Message{
 			Type: enum.OFFER_START,
 			Body:dto.Offer{
-				ConnectionID: string(connection.ID),
+				ConnectionID: connection.ID,
 			},
 		},)
 	}

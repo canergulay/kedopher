@@ -67,14 +67,15 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 			break
 		}
 
-		logrus.WithField("message",string(msg)).Infof("message received for user %s",user.ID)
-
 		var message dto.Message
 		err = message.UnmarshalJSON(msg)
 		if err != nil {
 			logrus.WithField("message",msg).Warnf("unable to parse message for user %s",user.ID)
 			continue
 		}
+
+		logrus.WithField("message",string(message.Type)).Infof("message received for user %s",user.ID)
+
 
 		switch message.Type {
 		case enum.INIT_CALL:

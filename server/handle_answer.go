@@ -10,7 +10,7 @@ import (
 func (w wsServer) handleAnswer(msg dto.Message,user *model.User){
 	answer,ok := msg.GetBodyAsAnswer()
 	if !ok {
-		// todo log
+		logrus.Errorf("unable to get body as answer for user %s",user.ID)
 		return
 	}
 
@@ -19,7 +19,7 @@ func (w wsServer) handleAnswer(msg dto.Message,user *model.User){
 
 	connection := w.connectionHub.GetConnectionById(answer.ConnectionID)
 	if connection == nil {
-		// todo log
+		logrus.Errorf("unable to get connection %s",answer.ConnectionID)
 		return
 	}
 
@@ -40,14 +40,4 @@ func (w wsServer) handleAnswer(msg dto.Message,user *model.User){
 		})
 
 	}
-
-
-
-	// if err := connection.AddUserToAcceptedUsers(user.ID); err!=nil {
-	// 	// todo log
-	// }
-
-	// if connection.IsAllUsersAccepted(){
-	// 	w.triggerIceCandidatesExchangeForConnectionUsers(connection)
-	// }
 }

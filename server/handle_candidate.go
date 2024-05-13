@@ -58,7 +58,7 @@ func (w wsServer) checkForCandidateSentUsersAndTriggerCall(connection *model.Con
 	for _,userID := range connection.CandidateSentUsers {
 		user := w.userHub.GetUserById(userID)
 		if user == nil {
-			// todo log
+			logrus.Errorf("unable to find user for trigger call %s",userID)
 			continue
 		}
 

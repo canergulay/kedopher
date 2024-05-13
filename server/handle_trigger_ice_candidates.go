@@ -31,7 +31,7 @@ func (w wsServer) triggerIceCandidatesExchangeForConnectionUsers(connection *mod
 	for _,userID := range connection.Users {
 		user := w.userHub.GetUserById(userID)
 		if user == nil {
-			// todo log
+			logrus.Errorf("unable to get user for triggerIceCandidatesExchangeForConnectionUsers %s",userID)
 			continue
 		}
 

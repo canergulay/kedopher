@@ -15,6 +15,7 @@ func main() {
 	connectionHub := connectionhub.NewConnectionHub()
 
 	wsServer := server.NewWsServer(&userHub,&connectionHub)
+	go wsServer.OnlineUsersCountBroadcastProcessor()
 	
 	http.HandleFunc("/ws", wsServer.HandleWebsocketConnections)
 

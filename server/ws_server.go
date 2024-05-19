@@ -59,6 +59,13 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 	
 	ws.userHub.AddNewUser(user)
 
+	go ws.sendMessage(user.Conn, dto.Message{
+		Type: enum.ONLINE_USERS_COUNT,
+		Body: dto.OnlineUsersCount{
+			Count: len(ws.userHub.Users),
+		},
+	})
+
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
@@ -76,7 +83,6 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 
 		logrus.WithField("message",string(message.Type)).Infof("message received for user %s",user.ID)
 
-
 		switch message.Type {
 		case enum.INIT_CALL:
 			ws.handleInitCall(user)
@@ -88,6 +94,8 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 			ws.handleTriggerIceCandidates(message,user)
 		case enum.ICE_CANDIDATES:
 			ws.handleIceCandidate(message,user)
+		case enum.USER_STATUS:
+			ws.handleUserStatus(message,user)
 		}
 	}
 }

@@ -33,6 +33,10 @@ func (m Message) GetBodyAsTriggerIceCandidates() (TriggerIceCandidates, bool) {
 	return parsed,ok
 }
 
+func (m Message) GetBoyAsUserStatus() (UserStatus,bool){
+	parsed,ok := m.Body.(UserStatus)
+	return parsed,ok
+}
 
 
 func (m *Message) UnmarshalJSON(data []byte) error {
@@ -69,6 +73,12 @@ func (m *Message) UnmarshalJSON(data []byte) error {
 		m.Body = body
 	case enum.TRIGGER_ICE_CANDIDATE:
 		var body TriggerIceCandidates
+		if err := json.Unmarshal(aux.Body, &body); err != nil {
+			return err
+		}
+		m.Body = body
+	case enum.USER_STATUS:
+		var body UserStatus
 		if err := json.Unmarshal(aux.Body, &body); err != nil {
 			return err
 		}

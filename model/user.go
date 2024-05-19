@@ -10,6 +10,7 @@ type User struct {
 	Conn *websocket.Conn
 	Sdp string
 	Status enum.UserStatus
+	Connections []ID
 }
 
 func (u *User) SetSdp(sdp string){
@@ -18,4 +19,8 @@ func (u *User) SetSdp(sdp string){
 
 func (u *User) SetStatus(status enum.UserStatus){
 	u.Status = status
+}
+
+func (u *User) AddConnectionToUser(connectionID ID){
+	
 }

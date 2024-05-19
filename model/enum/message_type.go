@@ -22,4 +22,6 @@ const (
 	START_CALL MessageType = "START_CALL"
 
     ONLINE_USERS_COUNT MessageType = "ONLINE_USERS_COUNT"
+
+    USER_STATUS MessageType = "USER_STATUS"
 )

@@ -22,7 +22,7 @@ func (ws wsServer) initSignalingForUsers(users []model.ID) {
 	user := ws.userHub.GetUserById(randomUserToStartSignaling)
 	if user == nil {
 		logrus.Warn("unable to find user for signal initializing")
-		
+		return
 	}
 	
 	ws.sendMessage(user.Conn,dto.Message{

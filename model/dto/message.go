@@ -12,6 +12,10 @@ type Message struct {
 	Body any `json:"body"`
 }
 
+func (m Message) GetBodyAsKillConnection() (KillConnection,bool){
+	parsed,ok := m.Body.(KillConnection)
+	return parsed,ok
+}
 
 func (m Message) GetBodyAsAnswer() (Answer,bool){
 	parsed,ok := m.Body.(Answer)
@@ -79,6 +83,12 @@ func (m *Message) UnmarshalJSON(data []byte) error {
 		m.Body = body
 	case enum.USER_STATUS:
 		var body UserStatus
+		if err := json.Unmarshal(aux.Body, &body); err != nil {
+			return err
+		}
+		m.Body = body
+	case enum.KILL_CONNECTION:
+		var body KillConnection
 		if err := json.Unmarshal(aux.Body, &body); err != nil {
 			return err
 		}

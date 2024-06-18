@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -75,9 +76,10 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 		}
 
 		var message dto.Message
+		fmt.Println(string(msg))
 		err = message.UnmarshalJSON(msg)
 		if err != nil {
-			logrus.WithField("message",msg).Warnf("unable to parse message for user %s",user.ID)
+			logrus.WithField("message",msg).WithError(err).Warnf("unable to parse message for user %s",user.ID)
 			continue
 		}
 
@@ -96,6 +98,8 @@ func (ws wsServer) HandleWebsocketConnections(w http.ResponseWriter, r *http.Req
 			ws.handleIceCandidate(message,user)
 		case enum.USER_STATUS:
 			ws.handleUserStatus(message,user)
+		case enum.KILL_CONNECTION:
+			ws.handleKillConnection(message,user)
 		}
 	}
 }

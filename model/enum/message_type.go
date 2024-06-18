@@ -24,4 +24,6 @@ const (
     ONLINE_USERS_COUNT MessageType = "ONLINE_USERS_COUNT"
 
     USER_STATUS MessageType = "USER_STATUS"
+
+    KILL_CONNECTION MessageType = "KILL_CONNECTION"
 )

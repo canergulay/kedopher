@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/canergulay/go-betternews-signaling/model"
 	"github.com/canergulay/go-betternews-signaling/model/dto"
 	"github.com/canergulay/go-betternews-signaling/model/enum"
@@ -10,7 +8,6 @@ import (
 )
 
 func (ws wsServer) handleKillConnection(message dto.Message,user *model.User) {
-	fmt.Println("kill connection geldi !")
 	killConnectionDTO,ok := message.GetBodyAsKillConnection()
 	if !ok {
 		logrus.Errorf("unable to get body as killConnectionDTO %v", message)

@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/canergulay/go-betternews-signaling/model"
 	"github.com/canergulay/go-betternews-signaling/model/dto"
 	"github.com/canergulay/go-betternews-signaling/model/enum"
@@ -10,7 +8,6 @@ import (
 )
 
 func (w wsServer) handleIceCandidate(message dto.Message,user *model.User){
-	fmt.Println("bura tetik")
 	iceCandidate,ok := message.GetBodyAsIceCandidate()
 	if !ok {
 		logrus.Errorf("unable to get body as ice candidate for user %s",user.ID)

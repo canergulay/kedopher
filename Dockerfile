@@ -2,11 +2,10 @@ FROM golang:1.21.0-alpine AS builder
 
 WORKDIR /app
 
-RUN go mod init
-
+COPY go.mod ./
 COPY go.sum ./
-
 COPY . .
+
 RUN go mod download
 
 RUN go build -o main

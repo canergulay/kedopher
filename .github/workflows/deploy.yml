@@ -21,3 +21,15 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:latest
+
+      - name: Deploy the image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          scripts: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:latest
+            docker stop ${{ secrets.DOCKER_APP_NAME }} || true
+            docker rm ${{ secrets.DOCKER_APP_NAME }} || true
+            docker run -d -p 8080:8080 --name ${{ secrets.DOCKER_APP_NAME }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:latest

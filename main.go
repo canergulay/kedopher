@@ -19,5 +19,8 @@ func main() {
 	
 	http.HandleFunc("/ws", wsServer.HandleWebsocketConnections)
 
+	http.HandleFunc("/statistics",wsServer.HandleStatistics)
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
+

@@ -34,4 +34,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:latest
             docker stop ${{ secrets.DOCKER_APP_NAME }} || true
             docker rm ${{ secrets.DOCKER_APP_NAME }} || true
-            docker run -d -p 8080:8080 --name ${{ secrets.DOCKER_APP_NAME }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:latest
+            docker run --restart=on-failure -d -p 8080:8080 --name ${{ secrets.DOCKER_APP_NAME }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP_NAME }}:latest

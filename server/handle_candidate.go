@@ -28,21 +28,20 @@ func (w wsServer) handleIceCandidate(message dto.Message, user *model.User) {
 	// send iceCandidate to all users in the connection except the candidate owner
 	for _, userID := range connection.Users {
 		if userID == user.ID {
-			logrus.Info("userID is same, skipping")
 			continue
 		}
 
-		user := w.userHub.GetUserById(userID)
-		if user == nil {
+		userToSend := w.userHub.GetUserById(userID)
+		if userToSend == nil {
 			logrus.Warnf("unable to find userID %s", userID)
 			continue
 		}
 
-		w.sendMessage(user.Conn, dto.Message{
+		w.sendMessage(userToSend.Conn, dto.Message{
 			Type: enum.ICE_CANDIDATES,
 			Body: iceCandidate,
 		})
-		logrus.Infof("ice candidates are sent to user %s from user %s", userID, user.ID)
+		logrus.Infof("ice candidates are sent to user %s from user %s", user.ID, userToSend.ID)
 	}
 
 	w.checkForCandidateSentUsersAndTriggerCall(connection)

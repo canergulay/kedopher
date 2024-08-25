@@ -7,20 +7,21 @@ import (
 	"github.com/canergulay/go-betternews-signaling/connectionhub"
 	"github.com/canergulay/go-betternews-signaling/server"
 	"github.com/canergulay/go-betternews-signaling/userhub"
+	"github.com/sirupsen/logrus"
 )
-
 
 func main() {
 	userHub := userhub.NewUserHub()
 	connectionHub := connectionhub.NewConnectionHub()
 
-	wsServer := server.NewWsServer(&userHub,&connectionHub)
+	wsServer := server.NewWsServer(&userHub, &connectionHub)
 	go wsServer.OnlineUsersCountBroadcastProcessor()
-	
+
 	http.HandleFunc("/ws", wsServer.HandleWebsocketConnections)
 
-	http.HandleFunc("/statistics",wsServer.HandleStatistics)
+	http.HandleFunc("/statistics", wsServer.HandleStatistics)
+
+	logrus.Info("app is up")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
-

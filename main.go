@@ -21,7 +21,7 @@ func main() {
 
 	http.HandleFunc("/statistics", wsServer.HandleStatistics)
 
-	logrus.Info("app is running")
+	logrus.Info("app is running!")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
